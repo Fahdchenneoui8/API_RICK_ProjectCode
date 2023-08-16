@@ -1,0 +1,85 @@
+.App {
+  text-align: center;
+}
+
+/* Header */
+.App-header {
+  background-color: #282c34;
+  padding: 20px;
+  color: white;
+}
+
+/* Main content */
+.main {
+  padding: 20px;
+}
+
+/* Container filter input */
+.filter-container {
+  margin-bottom: 20px;
+}
+
+/*character list styles */
+.character-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/*Styles character cards */
+.character-card {
+  border: 1px solid #ddd;
+  margin: 10px;
+  padding: 10px;
+  text-align: center;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+/*character cards on hover */
+.character-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.character-card img {
+  max-width: 100%;
+  border-radius: 8px;
+}
+
+/* filter input */
+.filter-container input {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Load More button */
+.load-more {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.load-more button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 8px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+/* Load More button on hover */
+.load-more button:hover {
+  background-color: #45a049;
+  transform: scale(1.05);
+}
