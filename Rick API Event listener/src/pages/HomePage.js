@@ -6,16 +6,18 @@ const API_URL = 'https://rickandmortyapi.com/api/character/';
 const CHARACTERS_PER_PAGE = 20;
 
 const HomePage = () => {
+  // State for char / page/ filters
   const [characters, setCharacters] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [filter, setFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [speciesFilter, setSpeciesFilter] = useState('');
   const loaderRef = useRef(null);
 
   useEffect(() => {
+    // Fetch char ,filters and page
     fetchCharacters();
-  }, [filter, currentPage]);
-
-  useEffect(() => {
+    
     const observer = new IntersectionObserver(handleObserver, {
       root: null,
       rootMargin: '20px',
@@ -26,18 +28,23 @@ const HomePage = () => {
       observer.observe(loaderRef.current);
     }
 
+    // Cleanup observer
     return () => {
       if (loaderRef.current) {
         observer.unobserve(loaderRef.current);
       }
     };
-  }, []);
-  
-    // Fetch characters
+  }, [filter, currentPage, statusFilter, speciesFilter]);
+
+  // Fetch char
   const fetchCharacters = async () => {
     try {
-      const response = await fetch(`${API_URL}?page=${currentPage}&name=${filter}`);
+      const response = await fetch(
+        `${API_URL}?page=${currentPage}&name=${filter}&status=${statusFilter}&species=${speciesFilter}`
+      );
       const data = await response.json();
+
+      // Update char state
       if (data.results && data.results.length > 0) {
         setCharacters((prevCharacters) => [...prevCharacters, ...data.results]);
       }
@@ -45,7 +52,8 @@ const HomePage = () => {
       console.error('Error fetching data:', error);
     }
   };
-  // Load more characters Event
+
+  // observer callback
   const handleObserver = (entities) => {
     const target = entities[0];
     if (target.isIntersecting) {
@@ -53,8 +61,23 @@ const HomePage = () => {
     }
   };
 
+  // Handler for filter 
   const handleFilterChange = (e) => {
     setFilter(e.target.value);
+    setCharacters([]);
+    setCurrentPage(1);
+  };
+
+  // status filter change
+  const handleStatusFilterChange = (e) => {
+    setStatusFilter(e.target.value);
+    setCharacters([]);
+    setCurrentPage(1);
+  };
+
+  // species filter change
+  const handleSpeciesFilterChange = (e) => {
+    setSpeciesFilter(e.target.value);
     setCharacters([]);
     setCurrentPage(1);
   };
@@ -72,9 +95,20 @@ const HomePage = () => {
             value={filter}
             onChange={handleFilterChange}
           />
+          <select value={statusFilter} onChange={handleStatusFilterChange}>
+            <option value="">Select Status</option>
+            <option value="alive">Alive</option>
+            <option value="dead">Dead</option>
+            <option value="unknown">Unknown</option>
+          </select>
+          <select value={speciesFilter} onChange={handleSpeciesFilterChange}>
+            <option value="">Select Species</option>
+            <option value="human">Human</option>
+            <option value="alien">Alien</option>
+          </select>
         </div>
         <div className="character-list">
-          {characters.map((character, index) => (
+          {characters.map((character) => (
             <CharacterCard key={character.id} character={character} />
           ))}
           <div className="loader" ref={loaderRef}></div>
