@@ -1,0 +1,21 @@
+.favorites-page {
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .character-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+  }
+  
+  .character-card {
+    border: 1px solid #ddd;
+    padding: 10px;
+  }
+  
+  .favorite-button {
+    cursor: pointer;
+    color: #e74c3c;
+  }
+  

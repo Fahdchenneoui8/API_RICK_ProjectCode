@@ -1,23 +1,31 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import CharacterCard from '../components/CharacterCard';
+import { useAppContextUpdate } from '../contexts/AppContext';
+import './HomePage.css';
+import '../components/Header.css';
 
-// API URL
+/// API Url 
 const API_URL = 'https://rickandmortyapi.com/api/character/';
-const CHARACTERS_PER_PAGE = 20;
 
-const HomePage = () => {
-  // State for char / page/ filters
+// const  
+function HomePage() {
   const [characters, setCharacters] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [filter, setFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [speciesFilter, setSpeciesFilter] = useState('');
   const loaderRef = useRef(null);
+  const { addToFavorites } = useAppContextUpdate();
 
+  //Fetch characters from the API base on filters and pag 
   useEffect(() => {
-    // Fetch char ,filters and page
     fetchCharacters();
-    
+  }, [filter, statusFilter, speciesFilter, currentPage]);
+
+
+  // infinity scrolling (API)
+  useEffect(() => {
     const observer = new IntersectionObserver(handleObserver, {
       root: null,
       rootMargin: '20px',
@@ -28,15 +36,15 @@ const HomePage = () => {
       observer.observe(loaderRef.current);
     }
 
-    // Cleanup observer
     return () => {
       if (loaderRef.current) {
         observer.unobserve(loaderRef.current);
       }
     };
-  }, [filter, currentPage, statusFilter, speciesFilter]);
+  }, [filter, statusFilter, speciesFilter]);
 
-  // Fetch char
+
+  // Fetch characters from the API for using Func
   const fetchCharacters = async () => {
     try {
       const response = await fetch(
@@ -44,7 +52,6 @@ const HomePage = () => {
       );
       const data = await response.json();
 
-      // Update char state
       if (data.results && data.results.length > 0) {
         setCharacters((prevCharacters) => [...prevCharacters, ...data.results]);
       }
@@ -53,7 +60,7 @@ const HomePage = () => {
     }
   };
 
-  // observer callback
+  // Handle intersection observer callback for infinite scrolling
   const handleObserver = (entities) => {
     const target = entities[0];
     if (target.isIntersecting) {
@@ -61,7 +68,7 @@ const HomePage = () => {
     }
   };
 
-  // Handler for filter 
+  // filter input change
   const handleFilterChange = (e) => {
     setFilter(e.target.value);
     setCharacters([]);
@@ -84,8 +91,12 @@ const HomePage = () => {
 
   return (
     <div className="home-page">
-      <header>
-        <h1>Rick and Morty Characters</h1>
+      <header className="app-header">
+        <h1 className="app-title">Rick and Morty Characters</h1>
+        <nav className="navbar">
+          <Link to="/">Home</Link>
+          <Link to="/favorites">Favorites</Link>
+        </nav>
       </header>
       <main>
         <div className="filter-container">
@@ -109,13 +120,17 @@ const HomePage = () => {
         </div>
         <div className="character-list">
           {characters.map((character) => (
-            <CharacterCard key={character.id} character={character} />
+            <CharacterCard
+              key={character.id}
+              character={character}
+              onAddToFavorites={() => addToFavorites(character)}
+            />
           ))}
           <div className="loader" ref={loaderRef}></div>
         </div>
       </main>
     </div>
   );
-};
+}
 
 export default HomePage;
